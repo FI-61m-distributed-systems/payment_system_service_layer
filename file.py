@@ -1,34 +1,22 @@
-from flask import Flask, request, render_template, redirect, url_for
-
+from flask import Flask, request
+import requests
 
 app = Flask(__name__)
 
 
-@app.route('/', methods=['POST', 'GET'])
-def hello():
-    if request.method == "POST":
-        return redirect(url_for('login'))
-    return render_template("hello.html")
-
-
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login', methods=["POST"])
 def login():
-    error = None
-    if request.method == "POST":
-        if valid_login(request.form['email'],
-                       request.form['password']):
-            return redirect(url_for('user', email=request.form['email']))
-        else:
-            error = "Invalid email/password"
-    # the code below is executed if the request method
-    # was GET or the credentials were invalid
-    return render_template("login.html", error=error)
-
-
-@app.route('/<email>')
-def user(email=None):
-    return render_template("user.html", email=email)
+    # Responses to POST request
+    if valid_login(request.form["email"], request.form["password"]):
+        # return empty body and if login is valid then status code OK else  Unauthorized
+        return "", 200
+    else:
+        return "", 401
 
 
 def valid_login(email, password):
     return True
+
+
+if __name__ == "__main__":
+    app.run(host="localhost", port=5000)
