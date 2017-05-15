@@ -40,8 +40,10 @@ def data_verification(data):
     if data != list(post):
         return response_error("Input all data, please")
     if "email" in post:
-        email = post["email"]
-        if not email.endswith("@gmail.com"):
+
+        email = post["email"].split("@")[1]
+        allowed_emails = ["gmail.com", "yandex.ru", "mail.ru"]
+        if email not in allowed_emails:
             return response_error("Input correct email, please")
     if "password_1" in post:
         password_1 = post["password_1"]
@@ -64,7 +66,6 @@ def user_login(email, password):
 
 def user_registration(username, email,  password_1, password_2):
     return True
-
 
 if __name__ == "__main__":
     app.run(host="localhost", port=5000)
