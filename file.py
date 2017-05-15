@@ -15,9 +15,9 @@ def login():
     print(email, password)
     if user_login(email, password):
         # return empty body and if login is valid then status code OK else  Unauthorized
-        return "", 200
+        return response_ok("")
     else:
-        return "", 401
+        return response_error("")
 
 
 @app.route("/register", methods=["POST"])
@@ -30,24 +30,32 @@ def register():
     username, email, password_1, password_2 = post["username"], post["email"], post["password_1"], post["password_2"]
     print(username, email, password_1, password_2)
     if user_registration(username, email, password_1, password_2):
-        return "", 200
+        return response_ok("")
     else:
-        return "", 401
+        return response_error("")
 
 
 def data_verification(data):
     post = data.pop()
     if data != list(post):
-        return "Input all data, please", 401
+        return response_error("Input all data, please")
     if "email" in post:
         email = post["email"]
         if not email.endswith("@gmail.com"):
-            return "Input correct email, please", 401
+            return response_error("Input correct email, please")
     if "password_1" in post:
         password_1 = post["password_1"]
         password_2 = post["password_2"]
         if password_1 != password_2:
-            return "Input the same password twice", 401
+            return response_error("Input the same password twice")
+
+
+def response_ok(message):
+    return message, 200
+
+
+def response_error(message):
+    return message, 401
 
 
 def user_login(email, password):
