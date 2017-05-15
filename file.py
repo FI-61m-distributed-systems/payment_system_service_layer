@@ -1,6 +1,5 @@
 from flask import Flask, request
 
-
 app = Flask(__name__)
 
 
@@ -8,11 +7,11 @@ app = Flask(__name__)
 def login():
     post = request.form
     data = ["email", "password", post]
-    message = data_verification(data)
-    if message:
-        return message
+    client_error = data_verification(data)
+    # if there is any error in data  passed by user then he get corresponding error message and status code 401
+    if client_error:
+        return client_error
     email, password = post["email"], post["password"]
-    print(email, password)
     if user_login(email, password):
         # return empty body and if login is valid then status code OK else  Unauthorized
         return response_ok("")
@@ -24,11 +23,10 @@ def login():
 def register():
     post = request.form
     data = ["username", "email", "password_1", "password_2", post]
-    message = data_verification(data)
-    if message:
-        return message
+    client_error = data_verification(data)
+    if client_error:
+        return client_error
     username, email, password_1, password_2 = post["username"], post["email"], post["password_1"], post["password_2"]
-    print(username, email, password_1, password_2)
     if user_registration(username, email, password_1, password_2):
         return response_ok("")
     else:
