@@ -1,4 +1,5 @@
 from flask import Flask, request
+import sys
 
 app = Flask(__name__)
 
@@ -35,7 +36,7 @@ def register():
     if user_registration(username, email, password_1, password_2):
         return response_ok("")
     else:
-        return response_client_error("")
+        return response_server_error("")
 
 
 def data_error(data, labels):
@@ -45,8 +46,11 @@ def data_error(data, labels):
 
 
 def email_error(email):
-    email = email.split("@")[1]
+    email = email.split("@")
     allowed_emails = ["gmail.com", "yandex.ru", "mail.ru"]
+    if len(email) != 2:
+        return True
+    email = email[1]
     if email not in allowed_emails:
         return True
     return False
@@ -66,6 +70,10 @@ def response_client_error(message):
     return message, 401
 
 
+def response_server_error(message):
+    return message, 500
+
+
 def user_login(email, password):
     return True
 
@@ -74,4 +82,5 @@ def user_registration(username, email,  password_1, password_2):
     return True
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000)
+    app.run(host=sys.argv[1], port=sys.argv[2])
+
